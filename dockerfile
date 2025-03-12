@@ -6,6 +6,9 @@ RUN apt-get update \
  wget \
  # tools for display testing (xeyes)
  x11-apps \
+ ros-humble-velodyne \
+ ros-humble-ament-cmake \
+ ros-humble-ament-cmake-ros \
  && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /cavas/host_data
@@ -15,15 +18,11 @@ RUN mkdir -p /tmp/downloads \
  && wget -q -O /tmp/downloads/sdk_install.bash https://bitbucket.org/DataspeedInc/dbw_ros/raw/ros2/ds_dbw/scripts/sdk_install.bash \
  && bash /tmp/downloads/sdk_install.bash
 
-RUN apt-get update && apt-get install -y ros-humble-velodyne 
-
-RUN mkdir -p ~/catkin_ws/src
-
-WORKDIR ~/catkin_ws/src
+#Install Velodyn Lidar 
+WORKDIR /root/catkin_ws/src
 RUN git clone https://github.com/ros-drivers/velodyne.git
 
 WORKDIR /root/catkin_ws
 
-RUN rosdep update && rosdep install --from-paths src --ignore-src --rosdistro humble -y
-
-RUN colcon build --symlink-install
+RUN rosdep install --from-paths src --ignore-src --rosdistro humble -y \
+&& /bin/bash -c "source /opt/ros/humble/setup.bash && colcon build --symlink-install"
