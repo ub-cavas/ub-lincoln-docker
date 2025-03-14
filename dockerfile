@@ -23,3 +23,12 @@ RUN mkdir -p /ros_ws/src
 
 WORKDIR /ros_ws/src
 RUN sudo apt install -y ros-humble-novatel-oem7-driver 
+
+#Install Velodyn Lidar 
+WORKDIR /ros_ws/src
+RUN git clone https://github.com/ros-drivers/velodyne.git
+
+WORKDIR /ros_ws/src
+
+RUN rosdep install --from-paths /ros_ws/src --ignore-src --rosdistro humble -y \
+&& /bin/bash -c "source /opt/ros/humble/setup.bash && colcon build --symlink-install"
