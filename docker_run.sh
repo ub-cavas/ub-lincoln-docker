@@ -11,6 +11,7 @@ if ! docker inspect $CONTAINER_NAME > /dev/null 2>&1; then
   --runtime=nvidia \
   --gpus all \
   --privileged \
+  --network host \
   -v /dev:/dev \
   -v /run/udev:/run/udev:ro \
   -v $HOST_DATA_PATH:/cavas/host_data \
@@ -24,7 +25,4 @@ else
   fi
 fi
 
-docker exec -it $CONTAINER_NAME /bin/bash -c '/ros_entrypoint.sh bash'; 
-
-
-
+docker exec -it $CONTAINER_NAME /bin/bash -c '/ros_entrypoint.sh bash';
