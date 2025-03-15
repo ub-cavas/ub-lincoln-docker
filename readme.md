@@ -8,10 +8,20 @@ This repo contains a dockerfile to build a docker image to simplify the use of C
 
 
 # In Container
+### Setup environment:
+    source /opt/ros/humble/setup.bash
+
+    source ~/catkin_ws/install/setup.bash
+
+
 ### Dataspeed DBW Commands:
     ros2 launch ds_dbw_can dbw.launch.xml
     
     ros2 launch ds_dbw_joystick_demo joystick_demo.launch.xml sys:=true
+
+
+### Velodyne Lidar Commands:
+    ros2 launch velodyne_driver velodyne_driver_node-VLP32C-launch.py
 
 
 
