@@ -3,13 +3,19 @@ FROM osrf/ros:humble-desktop-full
 RUN apt-get update \
  && apt-get upgrade -y \
  && apt-get install -y \
+ # General tools
  wget \
- # tools for display testing (xeyes)
+ # Display tools (xeyes)
  x11-apps \
+ # Networking tools
+ net-tools \
+ iputils-ping \
  # Velodyne Lidar specific packages
  ros-humble-velodyne \
  ros-humble-ament-cmake \
  ros-humble-ament-cmake-ros \
+ # Novatel OEM7 GNSS Driver 
+ ros-humble-novatel-oem7-driver \
  && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /cavas/host_data
@@ -19,15 +25,13 @@ RUN mkdir -p /tmp/downloads \
  && wget -q -O /tmp/downloads/sdk_install.bash https://bitbucket.org/DataspeedInc/dbw_ros/raw/ros2/ds_dbw/scripts/sdk_install.bash \
  && bash /tmp/downloads/sdk_install.bash
 
-# ROS2 Workspace setup
-WORKDIR /root/catkin_ws/src
+RUN mkdir -p /ros_ws/src
 
-#Install Velodyne Lidar
+
+# Install Velodyne Lidar 
+WORKDIR /ros_ws/src
 RUN git clone https://github.com/ros-drivers/velodyne.git
-# (Future ROS2 packages clones here)
 
-WORKDIR /root/catkin_ws
-
-# ROS2 dependencies and workspace build
-RUN rosdep install --from-paths src --ignore-src --rosdistro humble -y 
+WORKDIR /ros_ws/src
+RUN rosdep install --from-paths /ros_ws/src --ignore-src --rosdistro humble -y
 RUN /bin/bash -c "source /opt/ros/humble/setup.bash && colcon build --symlink-install"
