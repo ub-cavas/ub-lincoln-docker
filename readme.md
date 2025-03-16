@@ -12,6 +12,3 @@ This repo contains a dockerfile to build a docker image to simplify the use of C
     ros2 launch ds_dbw_can dbw.launch.xml
     
     ros2 launch ds_dbw_joystick_demo joystick_demo.launch.xml sys:=true
-
-
-
