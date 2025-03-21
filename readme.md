@@ -22,6 +22,3 @@ This repo contains a dockerfile to build a docker image to simplify the use of C
 
 ### Velodyne Lidar Commands:
     ros2 launch velodyne_driver velodyne_driver_node-VLP32C-launch.py
-
-
-
