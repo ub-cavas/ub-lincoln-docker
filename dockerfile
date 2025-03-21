@@ -54,5 +54,3 @@ RUN cd /ros_ws \
     && echo "source /opt/ros/humble/setup.bash" >> /root/.bashrc \
     && echo "source /ros_ws/install/local_setup.bash" >> /root/.bashrc \
     && echo "cd /ros_ws" >> /root/.bashrc
-
-WORKDIR /
