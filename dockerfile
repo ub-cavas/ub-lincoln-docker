@@ -4,12 +4,22 @@ FROM osrf/ros:humble-desktop-full
 RUN apt-get update \
  && apt-get upgrade -y \
  && apt-get install -y \
-    wget \
-    x11-apps \
-    git \
-    python3-colcon-common-extensions \
-    build-essential \
-    ros-humble-ament-cmake \
+ # General tools
+ wget \
+ # Display tools (xeyes)
+ x11-apps \
+ # Networking tools
+ net-tools \
+ iputils-ping \
+ # Velodyne Lidar specific packages
+ ros-humble-velodyne \
+ ros-humble-ament-cmake \
+ ros-humble-ament-cmake-ros \
+ # Novatel OEM7 GNSS Driver 
+ ros-humble-novatel-oem7-driver \
+ # Build Tools
+ build-essential \
+ python3-colcon-common-extensions
  && rm -rf /var/lib/apt/lists/*
 
 # Create directory for persistent host data
@@ -41,3 +51,13 @@ RUN mkdir -p /root/ros2_ws/src \
  && cd /root/ros2_ws/ \
  && rosdep install --from-path src --ignore-src -y \
  && bash -c "source /opt/ros/humble/setup.bash && colcon build --cmake-args -DVMB_DIR=/opt/VimbaX_2024-1"
+
+RUN mkdir -p /ros_ws/src
+
+# Install Velodyne Lidar 
+WORKDIR /ros_ws/src
+RUN git clone https://github.com/ros-drivers/velodyne.git
+
+WORKDIR /ros_ws/src
+RUN rosdep install --from-paths /ros_ws/src --ignore-src --rosdistro humble -y
+RUN /bin/bash -c "source /opt/ros/humble/setup.bash && colcon build --symlink-install"
