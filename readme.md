@@ -13,7 +13,7 @@ This repo contains a dockerfile to build a docker image to simplify the use of C
 
     source ~/ros_ws/install/setup.bash
 
-> This is automatically done while building the dockerfile and automatically done!
+> This is automatically done while building the dockerfile and automatically done when launching the container!
 
 ### Dataspeed DBW Commands:
     ros2 launch ds_dbw_can dbw.launch.xml
