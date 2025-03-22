@@ -20,7 +20,7 @@ RUN apt-get update \
 
 RUN mkdir -p /cavas/host_data
 
-# Run Dataspeed DBW SDK Install
+# Install Dataspeed DBW SDK
 RUN mkdir -p /tmp/downloads \
  && wget -q -O /tmp/downloads/sdk_install.bash https://bitbucket.org/DataspeedInc/dbw_ros/raw/ros2/ds_dbw/scripts/sdk_install.bash \
  && bash /tmp/downloads/sdk_install.bash
@@ -29,9 +29,9 @@ RUN mkdir -p /tmp/downloads \
 RUN mkdir -p /ros_ws/src \
     && cd /ros_ws/src \
     && git clone https://github.com/ros-drivers/velodyne.git \
-    && git clone -b Branch-with-files-for-docker-container --single-branch https://github.com/ub-cavas/vimbax_ros2_driver.git \
-# Move the Setup file from vimbax repository to /tmp/downlods
-    && mv /ros_ws/src/vimbax_ros2_driver/VimbaX_Setup-2024-1-Linux64.tar.gz /tmp/downloads
+    && git clone https://github.com/ub-cavas/vimbax_ros2_driver.git \
+    # Move the Setup file from vimbax repository to /tmp/downlods
+    && cp /ros_ws/src/vimbax_ros2_driver/vimbax_sdk/VimbaX_Setup-2024-1-Linux64.tar.gz /tmp/downloads
 
 # Install VimbaX SDK
 WORKDIR /tmp/downloads
@@ -43,7 +43,7 @@ RUN tar -xvf VimbaX_Setup-2024-1-Linux64.tar.gz && \
     echo "export GENICAM_GENTL64_PATH=$(pwd)" >> /root/.bashrc
 ENV GENICAM_GENTL64_PATH=/tmp/downloads/VimbaX_2024-1/cti
 
-# Delete the setup file to save space
+# Delete VimbaX SDK archive
 RUN rm /tmp/downloads/VimbaX_Setup-2024-1-Linux64.tar.gz
 
 # Building the packages and sourcing required files on startup
