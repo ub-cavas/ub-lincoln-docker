@@ -1,29 +1,27 @@
 FROM osrf/ros:humble-desktop-full
 
-RUN apt-get update \
- && apt-get upgrade -y \
- && apt-get install -y \
- # General tools
- wget \
- # Display tools (xeyes)
- x11-apps \
- # Networking tools
- net-tools \
- iputils-ping \
- # Velodyne Lidar specific packages
- ros-humble-velodyne \
- ros-humble-ament-cmake \
- ros-humble-ament-cmake-ros \
- # Novatel OEM7 GNSS Driver 
- ros-humble-novatel-oem7-driver \
- && rm -rf /var/lib/apt/lists/*
-
-RUN mkdir -p /cavas/host_data
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y \
+        # General tools
+        wget \
+        # Display tools (xeyes)
+        x11-apps \
+        # Networking tools
+        net-tools \
+        iputils-ping \
+        # Velodyne Lidar specific packages
+        ros-humble-velodyne \
+        ros-humble-ament-cmake \
+        ros-humble-ament-cmake-ros \
+        # Novatel OEM7 GNSS Driver 
+        ros-humble-novatel-oem7-driver \
+        && rm -rf /var/lib/apt/lists/*
 
 # Install Dataspeed DBW SDK
-RUN mkdir -p /tmp/downloads \
- && wget -q -O /tmp/downloads/sdk_install.bash https://bitbucket.org/DataspeedInc/dbw_ros/raw/ros2/ds_dbw/scripts/sdk_install.bash \
- && bash /tmp/downloads/sdk_install.bash
+RUN mkdir -p /tmp/downloads && \
+    wget -q -O /tmp/downloads/sdk_install.bash https://bitbucket.org/DataspeedInc/dbw_ros/raw/ros2/ds_dbw/scripts/sdk_install.bash && \
+    bash /tmp/downloads/sdk_install.bash
 
 # Clone repositories and copy specific files
 RUN mkdir -p /ros_ws/src \
