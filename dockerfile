@@ -1,6 +1,5 @@
 FROM osrf/ros:humble-desktop-full
 
-# Update and install necessary dependencies
 RUN apt-get update \
  && apt-get upgrade -y \
  && apt-get install -y \
@@ -17,12 +16,8 @@ RUN apt-get update \
  ros-humble-ament-cmake-ros \
  # Novatel OEM7 GNSS Driver 
  ros-humble-novatel-oem7-driver \
- # Build Tools
- build-essential \
- python3-colcon-common-extensions
  && rm -rf /var/lib/apt/lists/*
 
-# Create directory for persistent host data
 RUN mkdir -p /cavas/host_data
 
 # Install Dataspeed DBW SDK
@@ -30,34 +25,31 @@ RUN mkdir -p /tmp/downloads \
  && wget -q -O /tmp/downloads/sdk_install.bash https://bitbucket.org/DataspeedInc/dbw_ros/raw/ros2/ds_dbw/scripts/sdk_install.bash \
  && bash /tmp/downloads/sdk_install.bash
 
-# Copy and install VimbaX SDK
-COPY VimbaX_Setup-2024-1-Linux64.tar.gz /opt/
-WORKDIR /opt
-RUN tar -xvf VimbaX_Setup-2024-1-Linux64.tar.gz \
- && cd VimbaX_2024-1/cti \
- && ./Install_GenTL_Path.sh \
- && ./Set_GenTL_Path.sh
+# Clone repositories and copy specific files
+RUN mkdir -p /ros_ws/src \
+    && cd /ros_ws/src \
+    && git clone https://github.com/ros-drivers/velodyne.git \
+    && git clone https://github.com/ub-cavas/vimbax_ros2_driver.git \
+    # Move the Setup file from vimbax repository to /tmp/downlods
+    && cp /ros_ws/src/vimbax_ros2_driver/vimbax_sdk/VimbaX_Setup-2024-1-Linux64.tar.gz /tmp/downloads
 
-# Set up ROS2 environment
-RUN bash -c "source /opt/ros/humble/setup.bash && \
-    if [ ! -f /etc/ros/rosdep/sources.list.d/20-default.list ]; then rosdep init; fi && \
-    rosdep update && \
-    apt-get update"
+# Install VimbaX SDK
+WORKDIR /tmp/downloads
+RUN tar -xvf VimbaX_Setup-2024-1-Linux64.tar.gz && \
+    cd VimbaX_2024-1/cti && \
+    ./Install_GenTL_Path.sh && \
+    # Directly set environment variable for Docker
+    echo "export GENICAM_GENTL64_PATH=$(pwd)" >> /etc/bash.bashrc && \
+    echo "export GENICAM_GENTL64_PATH=$(pwd)" >> /root/.bashrc
+ENV GENICAM_GENTL64_PATH=/tmp/downloads/VimbaX_2024-1/cti
 
-# Clone and build the vimbax_ros2_driver
-RUN mkdir -p /root/ros2_ws/src \
- && cd /root/ros2_ws/src \
- && git clone https://github.com/ub-cavas/vimbax_ros2_driver.git \
- && cd /root/ros2_ws/ \
- && rosdep install --from-path src --ignore-src -y \
- && bash -c "source /opt/ros/humble/setup.bash && colcon build --cmake-args -DVMB_DIR=/opt/VimbaX_2024-1"
+# Delete VimbaX SDK archive
+RUN rm /tmp/downloads/VimbaX_Setup-2024-1-Linux64.tar.gz
 
-RUN mkdir -p /ros_ws/src
-
-# Install Velodyne Lidar 
-WORKDIR /ros_ws/src
-RUN git clone https://github.com/ros-drivers/velodyne.git
-
-WORKDIR /ros_ws/src
-RUN rosdep install --from-paths /ros_ws/src --ignore-src --rosdistro humble -y
-RUN /bin/bash -c "source /opt/ros/humble/setup.bash && colcon build --symlink-install"
+# Building the packages and sourcing required files on startup
+RUN cd /ros_ws \
+    && rosdep install --from-paths src --ignore-src --rosdistro humble -y \
+    && /bin/bash -c "source /opt/ros/humble/setup.bash && colcon build --symlink-install" \
+    && echo "source /opt/ros/humble/setup.bash" >> /root/.bashrc \
+    && echo "source /ros_ws/install/local_setup.bash" >> /root/.bashrc \
+    && echo "cd /ros_ws" >> /root/.bashrc
