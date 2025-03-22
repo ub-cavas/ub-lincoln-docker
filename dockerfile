@@ -30,7 +30,7 @@ RUN mkdir -p /ros_ws/src \
     && cd /ros_ws/src \
     && git clone https://github.com/ros-drivers/velodyne.git \
     && git clone -b Branch-with-files-for-docker-container --single-branch https://github.com/ub-cavas/vimbax_ros2_driver.git \
-    # Move the Setup file from vimbax repository to /tmp/downlods
+# Move the Setup file from vimbax repository to /tmp/downlods
     && mv /ros_ws/src/vimbax_ros2_driver/VimbaX_Setup-2024-1-Linux64.tar.gz /tmp/downloads
 
 # Install VimbaX SDK
@@ -43,10 +43,10 @@ RUN tar -xvf VimbaX_Setup-2024-1-Linux64.tar.gz && \
     echo "export GENICAM_GENTL64_PATH=$(pwd)" >> /root/.bashrc
 ENV GENICAM_GENTL64_PATH=/tmp/downloads/VimbaX_2024-1/cti
 
-# Deleting the file to save space
+# Delete the setup file to save space
 RUN rm /tmp/downloads/VimbaX_Setup-2024-1-Linux64.tar.gz
 
-# Add to existing colcon build RUN command
+# Building the packages and sourcing required files on startup
 RUN cd /ros_ws \
     && rosdep install --from-paths src --ignore-src --rosdistro humble -y \
     && /bin/bash -c "source /opt/ros/humble/setup.bash && colcon build --symlink-install" \

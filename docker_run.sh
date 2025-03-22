@@ -25,4 +25,4 @@ else
   fi
 fi
 
-docker exec -it $CONTAINER_NAME /bin/bash -c '/ros_entrypoint.sh bash';
+docker exec -it $CONTAINER_NAME /bin/bash -c '/ros_entrypoint.sh bash'; 
