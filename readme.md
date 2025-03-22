@@ -5,15 +5,13 @@ This repo contains a dockerfile to build a docker image to simplify the use of C
 1) Install Docker [[Link]](https://docs.docker.com/engine/install/ubuntu/)
 2) Set docker user to not require sudo when running docker: [[Link]](https://docs.docker.com/engine/install/)
 3) Install NVIDIA container toolkit and register with docker: [[Link]](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
-4) Please **ENSURE** that **VimbaX Viewer Setup file** is present in the folder from where this repo is cloned to. The software can be downloaded from [[Here]](https://www.alliedvision.com/en/products/software/vimba-x-sdk/#c13326)
-
 # In Container
 ### Setup environment:
     source /opt/ros/humble/setup.bash
 
     source ~/ros_ws/install/setup.bash
 
-> This is automatically done while building the dockerfile and automatically done when launching the container!
+> This is sourced when launching the bash shell.
 
 ### Dataspeed DBW Commands:
     ros2 launch ds_dbw_can dbw.launch.xml
