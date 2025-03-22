@@ -1,36 +1,22 @@
 services:
-  ros2:
-    image: ub-cavas/ros2-lincoln
-    container_name: ros2_c
+  autoware:
+    image: ub-cavas/autoware-lincoln
+    container_name: autoware_c
     stdin_open: true
     tty: true
     runtime: nvidia
-    gpus: all
     privileged: true
     network_mode: host
     environment:
       - DISPLAY=${DISPLAY:-}
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
     volumes:
-      - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      - $HOME/.Xauthority:/home/${USERNAME}/.Xauthority
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - $XAUTHORITY:/root/.Xauthority
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - /tmp:/tmp
       - $HOST_DATA_PATH:/host_data
     devices:
       - /dev:/dev
       - /run/udev:/run/udev:ro
-
-
-
-# image: ${ROS2_WS_CONTAINER_NAME}-${USE_ROS_DISTRO}
-# stdin_open: true
-# tty: true
-# ipc: host
-# pid: host
-# user: ${USERNAME}
-# environment:
-#   - QT_X11_NO_MITSHM=1
-#   - ROS_DOMAIN_ID=${ROS_DOMAIN_ID}
-# volumes:
-#   - $ROS2_WS_MOUNT:/home/${USERNAME}/$ROS2_WS_CONTAINER_NAME

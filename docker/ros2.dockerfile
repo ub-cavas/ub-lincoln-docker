@@ -5,6 +5,7 @@ RUN apt-get update && \
     apt-get install -y \
         # General tools
         wget \
+        nano \
         # Display tools (xeyes)
         x11-apps \
         # Networking tools
