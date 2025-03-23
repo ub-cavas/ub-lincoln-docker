@@ -30,11 +30,10 @@ RUN apt-get update && \
         ros-$ROS_DISTRO-pacmod3
 
 # Install Autoware Universe
-RUN git clone https://github.com/autowarefoundation/autoware.git
+RUN git clone -b awsim-stable --single-branch https://github.com/autowarefoundation/autoware.git
 RUN cd autoware && \
     mkdir src && \
-    vcs import src < autoware.repos && \
-    vcs import src < extra-packages.repos
+    vcs import src < autoware.repos
 RUN /bin/bash -c "cd autoware && \
     source /opt/ros/humble/setup.bash && \
     apt-get update && \

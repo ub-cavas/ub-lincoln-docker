@@ -25,16 +25,16 @@ RUN mkdir -p /tmp/downloads && \
     bash /tmp/downloads/sdk_install.bash
 
 # Clone repositories and copy specific files
-RUN mkdir -p /ros_ws/src \
-    && cd /ros_ws/src \
-    && git clone https://github.com/ros-drivers/velodyne.git \
-    && git clone https://github.com/ub-cavas/vimbax_ros2_driver.git \
+RUN mkdir -p /ros_ws/src && \
+    cd /ros_ws/src && \
+    git clone https://github.com/ros-drivers/velodyne.git && \
+    git clone https://github.com/ub-cavas/vimbax_ros2_driver.git && \
     # Move the Setup file from vimbax repository to /tmp/downlods
-    && cp /ros_ws/src/vimbax_ros2_driver/vimbax_sdk/VimbaX_Setup-2024-1-Linux64.tar.gz /tmp/downloads
+    cp /ros_ws/src/vimbax_ros2_driver/vimbax_sdk/VimbaX_Setup-2024-1-Linux64.tar.gz /tmp/downloads
 
 # Install VimbaX SDK
-WORKDIR /tmp/downloads
-RUN tar -xvf VimbaX_Setup-2024-1-Linux64.tar.gz && \
+RUN cd /tmp/downloads && \
+    tar -xvf VimbaX_Setup-2024-1-Linux64.tar.gz && \
     cd VimbaX_2024-1/cti && \
     ./Install_GenTL_Path.sh && \
     # Directly set environment variable for Docker
@@ -46,9 +46,9 @@ ENV GENICAM_GENTL64_PATH=/tmp/downloads/VimbaX_2024-1/cti
 RUN rm /tmp/downloads/VimbaX_Setup-2024-1-Linux64.tar.gz
 
 # Building the packages and sourcing required files on startup
-RUN cd /ros_ws \
-    && rosdep install --from-paths src --ignore-src --rosdistro humble -y \
-    && /bin/bash -c "source /opt/ros/humble/setup.bash && colcon build --symlink-install" \
-    && echo "source /opt/ros/humble/setup.bash" >> /root/.bashrc \
-    && echo "source /ros_ws/install/local_setup.bash" >> /root/.bashrc \
-    && echo "cd /ros_ws" >> /root/.bashrc
+RUN cd /ros_ws && \
+    rosdep install --from-paths src --ignore-src --rosdistro humble -y && \
+    /bin/bash -c "source /opt/ros/humble/setup.bash && colcon build --symlink-install" && \
+    echo "source /opt/ros/humble/setup.bash" >> /root/.bashrc && \
+    echo "source /ros_ws/install/local_setup.bash" >> /root/.bashrc && \
+    echo "cd /ros_ws" >> /root/.bashrc

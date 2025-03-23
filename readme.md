@@ -6,6 +6,21 @@ This repo contains a dockerfile to build a docker image to simplify the use of C
 2) Set docker user to not require sudo when running docker: [[Link]](https://docs.docker.com/engine/install/)
 3) Install NVIDIA container toolkit and register with docker: [[Link]](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
 
+# Usage
+1) Build Images (ros2-lincoln & autoware-lincoln):
+```
+./build_ros2.bash
+./build_autoware.bash
+```
+2) Docker Compose Up:
+```
+./dc_up.bash
+```
+3) Start Bash Shell In Container:
+```
+./dc_bash.bash
+```
+
 # In Container
 ## Setup Environment:
     source /opt/ros/humble/setup.bash
