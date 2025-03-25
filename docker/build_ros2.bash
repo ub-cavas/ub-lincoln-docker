@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker build -t ub-cavas/ros2-lincoln -f ros2.dockerfile .
+docker build -t ubcavas/ros2-lincoln -f ros2.dockerfile .
