@@ -7,8 +7,14 @@ This repo contains a dockerfile to build a docker image to simplify the use of C
 3) Install NVIDIA container toolkit and register with docker: [[Link]](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
 
 # Usage
-1) Build Images (ros2-lincoln & autoware-lincoln):
+1) Pull or Build Images:
 ```
+cd docker
+docker compose pull
+
+- or -
+
+cd docker 
 ./build_ros2.bash
 ./build_autoware.bash
 ```
