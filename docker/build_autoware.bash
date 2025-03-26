@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker build -t ub-cavas/autoware-lincoln -f autoware.dockerfile .
+docker build -t ubcavas/autoware-lincoln -f autoware.dockerfile .
