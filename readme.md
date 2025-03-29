@@ -15,26 +15,21 @@ docker compose pull
 - or -
 
 cd docker 
-./build_ros2.bash
-./build_autoware.bash
+./build_ros2.sh
+./build_autoware.sh
 ```
-2) Docker Compose Up:
+2) Configure `.env` with the path to the shared folder on the host which will be shared with the container
+
+3) Docker Compose Up:
 ```
-./dc_up.bash
+./dc_up.sh
 ```
-3) Start Bash Shell In Container:
+4) Start Bash Shell In Container:
 ```
-./dc_bash.bash
+./dc_bash.sh
 ```
 
 # In Container
-## Setup Environment:
-    source /opt/ros/humble/setup.bash
-
-    source ~/ros_ws/install/setup.bash
-
- These are sourced when launching the bash shell.
-
 ## Dataspeed DBW Commands:
     ros2 launch ds_dbw_can dbw.launch.xml
     
