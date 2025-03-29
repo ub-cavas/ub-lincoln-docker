@@ -22,33 +22,37 @@ RUN apt-get update && \
 # Install Dataspeed DBW SDK
 RUN mkdir -p /tmp/downloads && \
     wget -q -O /tmp/downloads/sdk_install.bash https://bitbucket.org/DataspeedInc/dbw_ros/raw/ros2/ds_dbw/scripts/sdk_install.bash && \
-    bash /tmp/downloads/sdk_install.bash
+    bash /tmp/downloads/sdk_install.bash && \
+    rm /tmp/downloads/sdk_install.bash
 
-# Clone repositories and copy specific files
-RUN mkdir -p /ros_ws/src && \
-    cd /ros_ws/src && \
-    git clone https://github.com/ros-drivers/velodyne.git && \
-    git clone https://github.com/ub-cavas/vimbax_ros2_driver.git && \
-    # Move the Setup file from vimbax repository to /tmp/downlods
-    cp /ros_ws/src/vimbax_ros2_driver/vimbax_sdk/VimbaX_Setup-2024-1-Linux64.tar.gz /tmp/downloads
+# Make /ros_ws/src folder    
+RUN mkdir -p /ros_ws/src
+
+# Clone Velodyne Src
+RUN cd /ros_ws/src && \
+    git clone https://github.com/ros-drivers/velodyne.git 
+
+# Clone VimbaX ROS2 Driver
+RUN cd /ros_ws/src && \
+    git clone https://github.com/ub-cavas/vimbax_ros2_driver.git
 
 # Install VimbaX SDK
-RUN cd /tmp/downloads && \
+RUN mkdir -p /opt/vimbax && \
+    cp /ros_ws/src/vimbax_ros2_driver/vimbax_sdk/VimbaX_Setup-2024-1-Linux64.tar.gz /opt/vimbax && \
+    cd /opt/vimbax && \
     tar -xvf VimbaX_Setup-2024-1-Linux64.tar.gz && \
     cd VimbaX_2024-1/cti && \
     ./Install_GenTL_Path.sh && \
-    # Directly set environment variable for Docker
-    echo "export GENICAM_GENTL64_PATH=$(pwd)" >> /etc/bash.bashrc && \
-    echo "export GENICAM_GENTL64_PATH=$(pwd)" >> /root/.bashrc
-ENV GENICAM_GENTL64_PATH=/tmp/downloads/VimbaX_2024-1/cti
-
-# Delete VimbaX SDK archive
-RUN rm /tmp/downloads/VimbaX_Setup-2024-1-Linux64.tar.gz
+    echo "export GENICAM_GENTL64_PATH=$(pwd)" >> ~/.bashrc && \
+    rm /opt/vimbax/VimbaX_Setup-2024-1-Linux64.tar.gz
+ENV GENICAM_GENTL64_PATH=/opt/vimbax/VimbaX_2024-1/cti
 
 # Building the packages and sourcing required files on startup
 RUN cd /ros_ws && \
     rosdep install --from-paths src --ignore-src --rosdistro humble -y && \
-    /bin/bash -c "source /opt/ros/humble/setup.bash && colcon build --symlink-install" && \
-    echo "source /opt/ros/humble/setup.bash" >> /root/.bashrc && \
-    echo "source /ros_ws/install/local_setup.bash" >> /root/.bashrc && \
-    echo "cd /ros_ws" >> /root/.bashrc
+    /bin/bash -c "source /opt/ros/humble/setup.bash && colcon build --symlink-install"
+
+# Setup .bashrc
+RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc && \
+    echo "source /ros_ws/install/local_setup.bash" >> ~/.bashrc && \
+    echo "cd /ros_ws" >> ~/.bashrc
