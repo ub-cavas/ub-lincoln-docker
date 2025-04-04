@@ -74,18 +74,36 @@ RUN apt-mark hold \
     libnvparsers-dev \
     libnvinfer-plugin-dev
 
-# Install Autoware Universe
+# Clone Autoware Universe Repos
 RUN git clone -b awsim-stable --single-branch https://github.com/autowarefoundation/autoware.git
 RUN cd autoware && \
     mkdir src && \
     vcs import src < autoware.repos
+
+# Clone universe_dbw2_bridge
+RUN cd /autoware/src/vehicle/external && \
+    git clone https://github.com/ub-cavas/universe_dbw2_bridge.git
+
+# Clone transform_data
+RUN cd /autoware/src/vehicle/external && \
+    git clone https://github.com/ub-cavas/transform_data.git
+
+# Install Dependancies
 RUN /bin/bash -c "cd autoware && \
     source /opt/ros/humble/setup.bash && \
     apt-get update && \
     apt-get upgrade -y && \
     rosdep update && \
     rosdep install -y --from-paths src --ignore-src --rosdistro $ROS_DISTRO"
+
+# Build
 RUN /bin/bash -c "cd autoware && \
     source /opt/ros/humble/setup.bash && \
     colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release"
 
+# Setup .bashrc
+RUN sed -i 's|# source /autoware/install/setup.bash|source /autoware/install/setup.bash|' ~/.bashrc
+
+
+# Apply Temp. Patches (Will be removed ASAP)
+ADD resources/sensor_kit_calibration.yaml /autoware/src/param/autoware_individual_params/individual_params/config/default/awsim_sensor_kit/sensor_kit_calibration.yaml
