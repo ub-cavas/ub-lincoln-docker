@@ -60,7 +60,6 @@ RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc && \
 
 
 # Apply Temp. Patches (Will be removed ASAP)
-RUN pwd
 COPY resources/velodyne-all-nodes-VLP32C-composed-launch.py /ros_ws/src/velodyne/velodyne/launch/velodyne-all-nodes-VLP32C-composed-launch.py
 COPY resources/VLP32C-velodyne_driver_node-params.yaml /ros_ws/src/velodyne/velodyne_driver/config/VLP32C-velodyne_driver_node-params.yaml
 COPY resources/VLP32C-velodyne_transform_node-params.yaml /ros_ws/src/velodyne/velodyne_pointcloud/config/VLP32C-velodyne_transform_node-params.yaml
