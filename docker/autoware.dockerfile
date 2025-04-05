@@ -92,7 +92,6 @@ RUN cd /autoware/src/vehicle/external && \
 RUN /bin/bash -c "cd autoware && \
     source /opt/ros/humble/setup.bash && \
     apt-get update && \
-    apt-get upgrade -y && \
     rosdep update && \
     rosdep install -y --from-paths src --ignore-src --rosdistro $ROS_DISTRO"
 
@@ -103,6 +102,9 @@ RUN /bin/bash -c "cd autoware && \
 
 # Setup .bashrc
 RUN sed -i 's|# source /autoware/install/setup.bash|source /autoware/install/setup.bash|' ~/.bashrc
+
+# Add Map resources
+ADD resources/service_road_corrected/ /resources/service_road_corrected/
 
 
 # Apply Temp. Patches (Will be removed ASAP)
