@@ -3,8 +3,8 @@ This repo contains a dockerfile to build a docker image to simplify the use of C
 
 # Prerequisites
 1) Install Docker [[Link]](https://docs.docker.com/engine/install/ubuntu/)
-2) Set docker user to not require sudo when running docker: [[Link]](https://docs.docker.com/engine/install/)
-3) Install NVIDIA container toolkit and register with docker: [[Link]](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
+2) Setup docker user to not require sudo when running docker: [[Link]](https://docs.docker.com/engine/install/)
+3) Install NVIDIA container toolkit and register with docker: [[Link]](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html) (A supported NVIDIA video card is currently required)
 
 # Usage
 1) Pull or Build Images:

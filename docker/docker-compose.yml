@@ -4,19 +4,21 @@ services:
     container_name: autoware_c
     stdin_open: true
     tty: true
-    runtime: nvidia
-    privileged: true
     network_mode: host
+    ipc: host
+    privileged: true
+    runtime: nvidia
     environment:
-      - DISPLAY=${DISPLAY:-}
+      - DISPLAY=${DISPLAY}
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=all
     volumes:
-      - /tmp/.X11-unix:/tmp/.X11-unix
-      - $XAUTHORITY:/root/.Xauthority
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ${XAUTHORITY:-$HOME/.Xauthority}:/root/.Xauthority
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $HOST_DATA_PATH:/host_data
     devices:
       - /dev:/dev
       - /run/udev:/run/udev:ro
+      
