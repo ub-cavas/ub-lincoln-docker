@@ -27,9 +27,9 @@ RUN mkdir -p /tmp/downloads && \
 # Make /ros_ws/src folder    
 RUN mkdir -p /ros_ws/src
 
-# Clone Velodyne Src
-RUN cd /ros_ws/src && \
-    git clone https://github.com/ros-drivers/velodyne.git 
+# Setup .bashrc
+RUN echo "" >> ~/.bashrc && \
+    echo "# Added from ros2.dockerfile build" >> ~/.bashrc
 
 # Clone VimbaX ROS2 Driver
 RUN cd /ros_ws/src && \
@@ -56,9 +56,3 @@ RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc && \
     echo "# source /autoware/install/setup.bash" >> ~/.bashrc && \
     echo "source /ros_ws/install/local_setup.bash" >> ~/.bashrc && \
     echo "cd /ros_ws" >> ~/.bashrc
-
-
-# Apply Temp. Patches (Will be removed ASAP)
-COPY resources/velodyne-all-nodes-VLP32C-composed-launch.py /ros_ws/src/velodyne/velodyne/launch/velodyne-all-nodes-VLP32C-composed-launch.py
-COPY resources/VLP32C-velodyne_driver_node-params.yaml /ros_ws/src/velodyne/velodyne_driver/config/VLP32C-velodyne_driver_node-params.yaml
-COPY resources/VLP32C-velodyne_transform_node-params.yaml /ros_ws/src/velodyne/velodyne_pointcloud/config/VLP32C-velodyne_transform_node-params.yaml

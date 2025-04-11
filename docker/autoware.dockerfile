@@ -29,11 +29,21 @@ RUN apt-get update && \
         apt-transport-https \
         ros-$ROS_DISTRO-pacmod3
 
-# Install the RMW Implementation
+# Setup .bashrc
+RUN echo "" >> ~/.bashrc && \
+    echo "# Added from autoware.dockerfile build" >> ~/.bashrc
+
+# Install DDS
 ENV rmw_implementation_dashed=rmw-cyclonedds-cpp
 RUN apt-get update && \
     apt-get install -y ros-humble-${rmw_implementation_dashed}
-RUN sh -c 'echo '' >> ~/.bashrc && echo "export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp" >> ~/.bashrc'
+
+# Add Cyclonedds.xml DDS resource
+ADD resources/cyclonedds.xml /resources/cyclonedds.xml
+
+# Setup DDS settings
+RUN echo "export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp" >> ~/.bashrc && \
+    echo "export CYCLONEDDS_URI=file:///resources/cyclonedds.xml" >> ~/.bashrc
 
 # Install Nvidia CUDA Toolkit
 ENV cuda_version_dashed=11-6
@@ -102,10 +112,9 @@ RUN /bin/bash -c "cd autoware && \
 
 # Setup .bashrc
 RUN sed -i 's|# source /autoware/install/setup.bash|source /autoware/install/setup.bash|' ~/.bashrc
-
-# Add Map resources
+   
+# Add map resources
 ADD resources/service_road_corrected/ /resources/service_road_corrected/
 
-
-# Apply Temp. Patches (Will be removed ASAP)
+# Apply temp. patches (will be removed ASAP)
 ADD resources/sensor_kit_calibration.yaml /autoware/src/param/autoware_individual_params/individual_params/config/default/awsim_sensor_kit/sensor_kit_calibration.yaml
