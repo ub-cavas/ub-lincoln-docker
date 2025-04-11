@@ -98,6 +98,10 @@ RUN cd /autoware/src/vehicle/external && \
 RUN cd /autoware/src/vehicle/external && \
     git clone https://github.com/ub-cavas/transform_data.git
 
+# Clone lincoln_launch
+RUN cd /autoware/src/launcher && \
+    git clone https://github.com/ub-cavas/lincoln_launch.git
+
 # Install Dependancies
 RUN /bin/bash -c "cd autoware && \
     source /opt/ros/humble/setup.bash && \
