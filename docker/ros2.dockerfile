@@ -27,6 +27,10 @@ RUN mkdir -p /tmp/downloads && \
 # Make /ros_ws/src folder    
 RUN mkdir -p /ros_ws/src
 
+# Setup .bashrc
+RUN echo "" >> ~/.bashrc && \
+    echo "# Added from ros2.dockerfile build" >> ~/.bashrc
+
 # Clone VimbaX ROS2 Driver
 RUN cd /ros_ws/src && \
     git clone https://github.com/ub-cavas/vimbax_ros2_driver.git
