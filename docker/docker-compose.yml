@@ -1,6 +1,6 @@
 services:
   autoware:
-    image: ubcavas/autoware-lincoln
+    image: ubcavas/autoware-lincoln:0.43.1
     container_name: autoware_c
     stdin_open: true
     tty: true

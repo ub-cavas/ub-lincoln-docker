@@ -3,20 +3,30 @@ FROM osrf/ros:humble-desktop-full
 RUN apt-get update && \
     apt-get install -y \
         # General tools
+        git-lfs \
         wget \
+        gpg \
         nano \
+        apt-transport-https \
         # Display tools (xeyes)
         x11-apps \
         # Networking tools
         net-tools \
         iputils-ping \
-        # Velodyne Lidar specific packages
+        # Velodyne lidar driver
         ros-humble-velodyne \
-        ros-humble-ament-cmake \
-        ros-humble-ament-cmake-ros \
-        # Novatel OEM7 GNSS Driver 
-        ros-humble-novatel-oem7-driver \
-        && rm -rf /var/lib/apt/lists/*
+        # Novatel OEM7 GNSS driver 
+        ros-humble-novatel-oem7-driver && \
+    rm -rf /var/lib/apt/lists/* && \
+    git lfs install
+
+# Install VSCode
+RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg && \
+    install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg && \
+    echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" |sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null && \
+    rm -f packages.microsoft.gpg && \
+    apt-get update && \
+    apt-get install -y code
 
 # Install Dataspeed DBW SDK
 RUN mkdir -p /tmp/downloads && \
