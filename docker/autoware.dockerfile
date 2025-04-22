@@ -43,6 +43,22 @@ RUN bash -c 'source /autoware/amd64.env && \
 RUN echo "export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp" >> ~/.bashrc && \
     echo "export CYCLONEDDS_URI=file:///resources/cyclonedds.xml" >> ~/.bashrc
 
+# Setup pipx to install ansible and ansible collections
+    #Install pipx
+RUN sudo apt-get -y update \
+    apt-get -y install pipx \
+    # Add pipx to the system PATH
+    python3 -m pipx ensurepath \
+    # Install ansible
+    pipx install --include-deps --force "ansible==6.*" 
+    
+# Install ansible collections
+RUN cd /autoware \
+    ansible-galaxy collection install -f -r "ansible-galaxy-requirements.yaml"
+
+#Download artifacts (perception model inferences) to /autoware_data folder
+RUN ansible-playbook autoware.dev_env.download_artifacts -e "data_dir=/autoware_data"
+
 # Install Nvidia CUDA Toolkit
 RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb && \
     dpkg -i cuda-keyring_1.1-1_all.deb && \ 
