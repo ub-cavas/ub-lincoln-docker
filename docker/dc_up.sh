@@ -5,5 +5,5 @@ if [ -n "$1" ]; then
     service="$1"
 fi
 
-# export XAUTHORITY=$(xauth info | grep "Authority file" | awk '{ print $3 }')
+../scripts/host_config_dds.bash
 docker compose up -d $service
