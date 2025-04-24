@@ -18,31 +18,51 @@ cd docker
 ./build_ros2.sh
 ./build_autoware.sh
 ```
-2) Configure `.env` with the path to the shared folder on the host which will be shared with the container
+2) Configure `.env` to set the container mounted directories to your host system
+    - $HOST_DATA_PATH
+    - $AUTOWARE_DATA_PATH
 
-3) Docker Compose Up:
+3) Verify that `AUTOWARE_DATA_PATH` directory has the artifact models downloaded within. If not, use the `scripts/host_dl_artifacts.bash` in the directory to download them.
+
+4) Docker Compose Up:
 ```
 ./dc_up.sh
 ```
-4) Start Bash Shell In Container:
+5) Start Bash Shell In Container:
 ```
 ./dc_bash.sh
 ```
 
-# In Container
-## Dataspeed DBW Commands:
-    ros2 launch ds_dbw_can dbw.launch.xml
-    
-#### Only The Joystick Testing Demo:
+# In Container Commands
+## Use Lincoln Launch Package:
 ```
+ros2 launch lincoln_launch dbw.launch.py
+ros2 launch lincoln_launch lidar.launch.py
+ros2 launch lincoln_launch gps.launch.py
+ros2 launch lincoln_launch bridge.launch.py
+ros2 launch lincoln_launch transform.launch.py
+ros2 launch lincoln_launch autoware.launch.xml
+```
+
+## Individual Packages:
+```
+# DBW:
+ros2 launch ds_dbw_can dbw.launch.xml
+
+# Velodyne Lidar:
+ros2 launch velodyne velodyne-all-nodes-VLP32C-composed-launch.py
+
+# Novatel GPS:
+ros2 launch novatel_oem7_driver oem7_net.launch.py oem7_ip_addr:=192.168.100.201 oem7_port:=3005
+
+# Mako Camera:
+ros2 run vimbax_camera vimbax_camera_node
+```
+
+
+```
+# Other Misc Packages:
+
+# DBW Joystick Testing Demo:
 ros2 launch ds_dbw_joystick_demo joystick_demo.launch.xml sys:=true
 ```
-
-## Velodyne Lidar Command:
-    ros2 launch velodyne velodyne-all-nodes-VLP32C-composed-launch.py
-
-## Novatel GPS Command:
-    ros2 launch novatel_oem7_driver oem7_net.launch.py oem7_ip_addr:=192.168.100.201 oem7_port:=3005
-
-## Mako Camera Command
-    ros2 run vimbax_camera vimbax_camera_node
