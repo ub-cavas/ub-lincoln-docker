@@ -85,6 +85,11 @@ ADD resources/ /resources/
 RUN cd /autoware && \
     vcs import src < /resources/ub_lincoln.repos
 
+# Apply autoware_launch patch
+# https://github.com/autowarefoundation/autoware_launch/pull/1403
+RUN cd /autoware/src/launcher/autoware_launch && \
+    git cherry-pick d4e825c580f8624169bc3ec5bb0776d13007fec7
+
 # Install dependencies
 RUN /bin/bash -c "cd autoware && \
     source /opt/ros/humble/setup.bash && \
