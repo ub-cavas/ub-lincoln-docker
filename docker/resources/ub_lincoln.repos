@@ -18,14 +18,9 @@ repositories:
     type: git
     url: https://github.com/ub-cavas/transform_data.git
     version: main
-  
-  # # param
-  # param/ub_lincoln_individual_params:
-  #   type: git
-  #   url: https://github.com/autowarefoundation/autoware_individual_params.git
-  #   version: main
-  
-  # launcher (will be removed soon?)
+
+
+  # launcher (will be removed soon)
   launcher/lincoln_launch:
     type: git
     url: https://github.com/ub-cavas/lincoln_launch.git
