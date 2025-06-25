@@ -1,3 +1,6 @@
 #!/bin/bash
 
-docker build -t ubcavas/autoware-lincoln:0.43.1 -f autoware.dockerfile $@ . 
+#For complete rebuild, use: --pull --no-cache
+BUILD_NUMBER=0
+DOCKER_TAG=$(date +%Y%m%d).$BUILD_NUMBER
+docker build -t ubcavas/autoware-lincoln:$DOCKER_TAG -f autoware.dockerfile $@ . 

@@ -13,14 +13,14 @@ repositories:
   vehicle/external/universe_dbw2_bridge:
     type: git
     url: https://github.com/ub-cavas/universe_dbw2_bridge.git
-    version: autoware_0.43.1
+    version: main
   vehicle/external/transform_data:
     type: git
     url: https://github.com/ub-cavas/transform_data.git
     version: main
 
 
-  # launcher (will be removed soon)
+  # launcher
   launcher/lincoln_launch:
     type: git
     url: https://github.com/ub-cavas/lincoln_launch.git
