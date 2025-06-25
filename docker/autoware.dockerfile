@@ -1,4 +1,4 @@
-FROM ubcavas/ros2-lincoln
+FROM ubcavas/ros2-lincoln:20250625.1
 
 # Clone Autoware Universe
 RUN git clone -b 0.43.1 --depth 1 https://github.com/autowarefoundation/autoware.git
@@ -104,6 +104,3 @@ RUN /bin/bash -c "cd autoware && \
 
 # Setup .bashrc to source /autoware
 RUN sed -i 's|# source /autoware/install/setup.bash|source /autoware/install/setup.bash|' ~/.bashrc
-
-# Set Version
-RUN echo "Autoware Docker Image Version: YYYYMMDD-HHMM" >> /ros_ws/build_version
