@@ -88,7 +88,7 @@ RUN cd /autoware && \
 # Apply autoware_launch patch
 # https://github.com/autowarefoundation/autoware_launch/pull/1403
 RUN cd /autoware/src/launcher/autoware_launch && \
-    git cherry-pick d4e825c580f8624169bc3ec5bb0776d13007fec7
+    git cherry-pick -n d4e825c580f8624169bc3ec5bb0776d13007fec7
 
 # Install dependencies
 RUN /bin/bash -c "cd autoware && \
@@ -104,3 +104,6 @@ RUN /bin/bash -c "cd autoware && \
 
 # Setup .bashrc to source /autoware
 RUN sed -i 's|# source /autoware/install/setup.bash|source /autoware/install/setup.bash|' ~/.bashrc
+
+# Set Version
+RUN echo "Autoware Docker Image Version: YYYYMMDD" >> /ros_ws/build_version
