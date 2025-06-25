@@ -106,4 +106,4 @@ RUN /bin/bash -c "cd autoware && \
 RUN sed -i 's|# source /autoware/install/setup.bash|source /autoware/install/setup.bash|' ~/.bashrc
 
 # Set Version
-RUN echo "Autoware Docker Image Version: YYYYMMDD" >> /ros_ws/build_version
+RUN echo "Autoware Docker Image Version: YYYYMMDD-HHMM" >> /ros_ws/build_version

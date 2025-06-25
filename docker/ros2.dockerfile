@@ -68,4 +68,4 @@ RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc && \
     echo "cd /ros_ws" >> ~/.bashrc
 
 # Set Version
-RUN echo "ROS2 Docker Image Version: YYYYMMDD" >> /ros_ws/build_version
+RUN echo "ROS2 Docker Image Version: YYYYMMDD-HHMM" >> /ros_ws/build_version
