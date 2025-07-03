@@ -1,4 +1,4 @@
-FROM ubcavas/ros2-lincoln:20250625.1
+FROM ubcavas/ros2-lincoln:20250628.0
 
 # Clone Autoware Universe
 RUN git clone -b 0.43.1 --depth 1 https://github.com/autowarefoundation/autoware.git

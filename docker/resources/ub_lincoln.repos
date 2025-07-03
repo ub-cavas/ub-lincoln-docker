@@ -14,14 +14,9 @@ repositories:
     type: git
     url: https://github.com/ub-cavas/universe_dbw2_bridge.git
     version: main
-  vehicle/external/transform_data:
-    type: git
-    url: https://github.com/ub-cavas/transform_data.git
-    version: main
 
-
-  # launcher
-  launcher/lincoln_launch:
+  # nebula driver (use more current version than what is in autoware.repos)
+  sensor_component/external/nebula:
     type: git
-    url: https://github.com/ub-cavas/lincoln_launch.git
-    version: main
+    url: https://github.com/tier4/nebula.git
+    version: v0.2.5.2
