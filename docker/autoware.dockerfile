@@ -102,5 +102,9 @@ RUN /bin/bash -c "cd autoware && \
     source /opt/ros/humble/setup.bash && \
     colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release"
 
-# Setup .bashrc to source /autoware
+# Configure .bashrc
 RUN sed -i 's|# source /autoware/install/setup.bash|source /autoware/install/setup.bash|' ~/.bashrc
+RUN sed -i 's|cd /ros_ws|cd /autoware|' ~/.bashrc
+
+RUN echo ". /resources/.bash_aliases" >> ~/.bashrc
+RUN echo ". /resources/.bash_ros2_debug" >> ~/.bashrc

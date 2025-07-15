@@ -20,3 +20,9 @@ repositories:
     type: git
     url: https://github.com/tier4/nebula.git
     version: v0.2.5.2
+
+  # lincoln_launch
+  launcher/lincoln_launch:
+    type: git
+    url: https://github.com/ub-cavas/lincoln_launch.git
+    version: main
