@@ -19,9 +19,13 @@ RUN bash -c 'source /autoware/amd64.env && \
 # Install gdown
 RUN pip3 install gdown
 
+# Install usbutils #TODO: Move to ROS Base Image
+RUN apt-get install -y \
+    usbutils
+
 # Install geographiclib
 RUN apt-get install -y \
-        geographiclib-tools && \
+    geographiclib-tools && \
     # Add EGM2008 geoid grid to geographiclib
     geographiclib-get-geoids egm2008-1
 

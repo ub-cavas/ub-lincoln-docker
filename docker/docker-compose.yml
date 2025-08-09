@@ -1,6 +1,6 @@
 services:
   autoware:
-    image: ubcavas/autoware-lincoln:20250723.0
+    image: ubcavas/autoware-lincoln:20250809.0
     container_name: autoware_c
     stdin_open: true
     tty: true
@@ -24,6 +24,7 @@ services:
       # - ~/.gitconfig:/root/.gitconfig:ro
       # - $UB_SENSOR_KIT:/autoware/src/launcher/autoware_launch/sensor_kit/ub_lincoln_sensor_kit_launch
       # - $UB_VEHICLE:/autoware/src/launcher/autoware_launch/vehicle/ub_lincoln_vehicle_launch
+      # - $UB_BRIDGE:/autoware/src/vehicle/external/universe_dbw2_bridge
     devices:
       - /dev:/dev
       - /run/udev:/run/udev:ro
