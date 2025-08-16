@@ -101,6 +101,9 @@ RUN /bin/bash -c "cd autoware && \
     rosdep update && \
     rosdep install -y --from-paths src --ignore-src --rosdistro $ROS_DISTRO"
 
+# Set Custom Autoware Params
+RUN /bin/bash -c "/resources/set_custom_autoware_params.sh"
+
 # Build
 RUN /bin/bash -c "cd autoware && \
     source /opt/ros/humble/setup.bash && \
