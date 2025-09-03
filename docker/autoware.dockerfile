@@ -1,5 +1,16 @@
 FROM ubcavas/ros2-lincoln:20250628.0
 
+# ***** GLIM LIBRARY DEPENDENCIES *****
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+      libglfw3-dev \
+      libglm-dev \
+      libpng-dev \
+      libglew-dev \
+      libxinerama-dev \
+      libxcursor-dev \
+      libxi-dev
+
 # Clone Autoware Universe
 RUN git clone -b 0.43.1 --depth 1 https://github.com/autowarefoundation/autoware.git
 RUN cd /autoware && \
@@ -82,6 +93,58 @@ RUN apt-mark hold \
         libnvinfer-headers-dev \
         libnvinfer-headers-plugin-dev
 
+#-----------GLIM DEPENDENCIES----------------   
+
+# GTSAM
+RUN git clone https://github.com/borglab/gtsam.git && \
+    cd gtsam && \
+    git checkout 4.3a0 && \
+    mkdir -p build && \
+    cd build && \
+    cmake .. \
+      -DGTSAM_BUILD_EXAMPLES_ALWAYS=OFF \
+      -DGTSAM_BUILD_TESTS=OFF \
+      -DGTSAM_WITH_TBB=OFF \
+      -DGTSAM_USE_SYSTEM_EIGEN=ON \
+      -DGTSAM_BUILD_WITH_MARCH_NATIVE=OFF && \
+    make -j"$(nproc)" && \
+    sudo make install
+
+# Iridescence (optional visualization)
+RUN git clone https://github.com/koide3/iridescence.git --recursive && \
+    mkdir -p iridescence/build && \
+    cd iridescence/build && \
+    cmake .. -DCMAKE_BUILD_TYPE=Release && \
+    make -j"$(nproc)" && \
+    sudo make install
+
+# Make /usr/local/cuda point to the installed toolkit and add nvcc to PATH
+RUN ln -s /usr/local/cuda-12.6 /usr/local/cuda \
+ && echo 'export PATH=/usr/local/cuda/bin:$PATH' >> /etc/profile.d/cuda.sh \
+ && echo 'export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH' >> /etc/profile.d/cuda.sh
+
+# Build gtsam_points with CUDA support
+RUN git clone https://github.com/koide3/gtsam_points.git \
+ && mkdir -p gtsam_points/build \
+ && cd gtsam_points/build \
+ && cmake .. \
+      -DBUILD_WITH_CUDA=ON \
+      -DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc \
+ && make -j"$(nproc)" \
+ && sudo make install \
+ && sudo ldconfig
+
+# Clone and build GLIM core and ROS2 integration
+RUN cd /ros_ws/src && \
+    git clone https://github.com/koide3/glim.git && \
+    git clone https://github.com/koide3/glim_ros2.git && \
+    git clone https://github.com/koide3/glim_ext.git 
+
+# Building the packages and sourcing required files on startup
+RUN cd /ros_ws && \
+    rosdep install --from-paths src --ignore-src --rosdistro humble -y && \
+    /bin/bash -c "source /opt/ros/humble/setup.bash && colcon build --symlink-install"
+
 # Add resources dir
 ADD resources/ /resources/
 
@@ -115,3 +178,5 @@ RUN sed -i 's|cd /ros_ws|cd /autoware|' ~/.bashrc
 
 RUN echo ". /resources/.bash_aliases" >> ~/.bashrc
 RUN echo ". /resources/.bash_ros2_debug" >> ~/.bashrc
+    echo "source /ros_ws/install/local_setup.bash" >> ~/.bashrc && \
+    echo "cd /ros_ws" >> ~/.bashrc
