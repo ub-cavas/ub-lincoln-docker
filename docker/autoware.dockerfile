@@ -101,6 +101,13 @@ RUN /bin/bash -c "cd autoware && \
     rosdep update && \
     rosdep install -y --from-paths src --ignore-src --rosdistro $ROS_DISTRO"
 
+# Download Maps & Set up UB_HDMAP
+RUN /bin/bash -c "/resources/download_maps.sh"
+
+# Set Custom Accel_map & Brake_map files
+COPY /resources/accel_map.csv /autoware/src/universe/autoware_universe/vehicle/autoware_raw_vehicle_cmd_converter/data/default/accel_map.csv
+COPY /resources/brake_map.csv /autoware/src/universe/autoware_universe/vehicle/autoware_raw_vehicle_cmd_converter/data/default/brake_map.csv
+
 # Set Custom Autoware Params
 RUN /bin/bash -c "/resources/set_custom_autoware_params.sh"
 
