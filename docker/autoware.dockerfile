@@ -83,7 +83,10 @@ RUN apt-mark hold \
         libnvinfer-headers-plugin-dev
 
 # Add resources dir
-ADD resources/ /resources/
+ADD /resources /resources/
+
+# Download Maps & Set up UB_HDMAP
+RUN /bin/bash -c "/resources/download_maps.sh"
 
 # Clone ub_lincoln.repos
 RUN cd /autoware && \
@@ -100,13 +103,6 @@ RUN /bin/bash -c "cd autoware && \
     apt-get update && \
     rosdep update && \
     rosdep install -y --from-paths src --ignore-src --rosdistro $ROS_DISTRO"
-
-# Download Maps & Set up UB_HDMAP
-RUN /bin/bash -c "/resources/download_maps.sh"
-
-# Set Custom Accel_map & Brake_map files
-COPY /resources/accel_map.csv /autoware/src/universe/autoware_universe/vehicle/autoware_raw_vehicle_cmd_converter/data/default/accel_map.csv
-COPY /resources/brake_map.csv /autoware/src/universe/autoware_universe/vehicle/autoware_raw_vehicle_cmd_converter/data/default/brake_map.csv
 
 # Set Custom Autoware Params
 RUN /bin/bash -c "/resources/set_custom_autoware_params.sh"
