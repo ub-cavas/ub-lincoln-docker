@@ -83,7 +83,7 @@ RUN apt-mark hold \
         libnvinfer-headers-plugin-dev
 
 # Add resources dir
-ADD /resources /resources/
+ADD resources/ /resources/
 
 # Download Maps & Set up UB_HDMAP
 RUN /bin/bash -c "/resources/download_maps.sh"
