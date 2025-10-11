@@ -1,7 +1,7 @@
 FROM ubcavas/ros2-lincoln:20250628.0
 
 # Clone Autoware Universe
-RUN git clone -b 0.43.1 --depth 1 https://github.com/autowarefoundation/autoware.git
+RUN git clone -b 0.45.1 --depth 1 https://github.com/autowarefoundation/autoware.git
 RUN cd /autoware && \
     mkdir src && \
     vcs import src < autoware.repos
