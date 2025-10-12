@@ -85,14 +85,12 @@ RUN apt-mark hold \
 # Add resources dir
 ADD resources/ /resources/
 
+# Download Maps & Set up UB_HDMAP
+RUN /bin/bash -c "/resources/download_maps.sh"
+
 # Clone ub_lincoln.repos
 RUN cd /autoware && \
     vcs import src < /resources/ub_lincoln.repos
-
-# Apply autoware_launch patch
-# https://github.com/autowarefoundation/autoware_launch/pull/1403
-RUN cd /autoware/src/launcher/autoware_launch && \
-    git cherry-pick -n d4e825c580f8624169bc3ec5bb0776d13007fec7
 
 # Install dependencies
 RUN /bin/bash -c "cd autoware && \
