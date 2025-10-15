@@ -85,6 +85,9 @@ RUN apt-mark hold \
 # Add resources dir
 ADD resources/ /resources/
 
+# Download Maps & Set up UB_HDMAP
+RUN /bin/bash -c "/resources/download_maps.sh"
+
 # Clone ub_lincoln.repos
 RUN cd /autoware && \
     vcs import src < /resources/ub_lincoln.repos
