@@ -85,8 +85,8 @@ RUN apt-mark hold \
 # Add resources dir
 ADD resources/ /resources/
 
-# Download Maps & Set up UB_HDMAP
-RUN /bin/bash -c "/resources/download_maps.sh"
+# Download Accel & Brake Maps and set up ub_hdmap
+RUN /bin/bash -c "cd /resources && /resources/download_maps.sh"
 
 # Clone ub_lincoln.repos
 RUN cd /autoware && \
