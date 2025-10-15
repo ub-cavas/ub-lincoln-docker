@@ -23,3 +23,4 @@ rm -rf /resources/autoware_accel_brake_calibrator_files
 mkdir /root/.ros/camera_info
 mv /resources/camera_files/DEV_000F315C3534.xml /root/.ros/camera_info/DEV_000F315C3534.xml
 mv /resources/camera_files/DEV_000F315C3534.xml /root/.ros/camera_info/DEV_000F315C3534.yaml
+rm -rf /resources/camera_files
