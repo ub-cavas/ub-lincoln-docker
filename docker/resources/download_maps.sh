@@ -11,6 +11,6 @@ tar --no-same-owner -xvf ub_hdmap.tar.xz
 rm ub_hdmap.tar.xz
 
 # Download Camera Files
-wget -0 camera_files.tar.xz https://buffalo.box.com/shared/static/iwnncf6fw59qo9o3sufho4kelby1l4ze.xz
+wget -O camera_files.tar.xz https://buffalo.box.com/shared/static/iwnncf6fw59qo9o3sufho4kelby1l4ze.xz
 tar --no-same-owner -xvf camera_files.tar.xz
 rm camera_files.tar.xz
