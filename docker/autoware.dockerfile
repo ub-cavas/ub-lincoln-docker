@@ -85,8 +85,8 @@ RUN apt-mark hold \
 # Add resources dir
 ADD resources/ /resources/
 
-# Download Maps & Set up UB_HDMAP
-RUN /bin/bash -c "/resources/download_maps.sh"
+# Download Accel & Brake Maps and set up ub_hdmap
+RUN /bin/bash -c "cd /resources && /resources/download_maps.sh"
 
 # Clone ub_lincoln.repos
 RUN cd /autoware && \
@@ -115,6 +115,5 @@ RUN /bin/bash -c "cd autoware && \
 # Configure .bashrc
 RUN sed -i 's|# source /autoware/install/setup.bash|source /autoware/install/setup.bash|' ~/.bashrc
 RUN sed -i 's|cd /ros_ws|cd /autoware|' ~/.bashrc
-
 RUN echo ". /resources/.bash_aliases" >> ~/.bashrc
 RUN echo ". /resources/.bash_ros2_debug" >> ~/.bashrc
