@@ -117,3 +117,7 @@ RUN sed -i 's|# source /autoware/install/setup.bash|source /autoware/install/set
 RUN sed -i 's|cd /ros_ws|cd /autoware|' ~/.bashrc
 RUN echo ". /resources/.bash_aliases" >> ~/.bashrc
 RUN echo ". /resources/.bash_ros2_debug" >> ~/.bashrc
+
+# CARLA Autoware Interface
+RUN pip3 install carla==0.9.16
+RUN pip3 install transforms3d==0.4.2
