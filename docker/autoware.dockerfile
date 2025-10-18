@@ -1,7 +1,7 @@
-FROM ubcavas/ros2-lincoln:20250628.0
+FROM ubcavas/ros2-lincoln:20251018.0-dev
 
 # Clone Autoware Universe
-RUN git clone -b 0.43.1 --depth 1 https://github.com/autowarefoundation/autoware.git
+RUN git clone -b 0.45.1 --depth 1 https://github.com/autowarefoundation/autoware.git
 RUN cd /autoware && \
     mkdir src && \
     vcs import src < autoware.repos
@@ -18,10 +18,6 @@ RUN bash -c 'source /autoware/amd64.env && \
 
 # Install gdown
 RUN pip3 install gdown
-
-# Install usbutils #TODO: Move to ROS Base Image
-RUN apt-get install -y \
-    usbutils
 
 # Install geographiclib
 RUN apt-get install -y \
@@ -91,11 +87,6 @@ RUN /bin/bash -c "cd /resources && /resources/download_maps.sh"
 # Clone ub_lincoln.repos
 RUN cd /autoware && \
     vcs import src < /resources/ub_lincoln.repos
-
-# Apply autoware_launch patch
-# https://github.com/autowarefoundation/autoware_launch/pull/1403
-RUN cd /autoware/src/launcher/autoware_launch && \
-    git cherry-pick -n d4e825c580f8624169bc3ec5bb0776d13007fec7
 
 # Install dependencies
 RUN /bin/bash -c "cd autoware && \
