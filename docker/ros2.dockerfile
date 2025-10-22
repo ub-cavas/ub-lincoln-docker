@@ -8,6 +8,7 @@ RUN apt-get update && \
         gpg \
         nano \
         apt-transport-https \
+        usbutils \
         # Display tools (xeyes)
         x11-apps \
         # Networking tools
