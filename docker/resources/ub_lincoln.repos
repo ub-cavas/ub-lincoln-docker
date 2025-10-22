@@ -15,12 +15,6 @@ repositories:
     url: https://github.com/ub-cavas/universe_dbw2_bridge.git
     version: main
 
-  # nebula driver (use more current version than what is in autoware.repos)
-  sensor_component/external/nebula:
-    type: git
-    url: https://github.com/tier4/nebula.git
-    version: v0.2.5.2
-
   # lincoln_launch
   launcher/lincoln_launch:
     type: git

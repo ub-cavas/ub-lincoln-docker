@@ -1,4 +1,4 @@
-FROM ubcavas/ros2-lincoln:20251018.0-dev
+FROM ubcavas/ros2-lincoln:20251018.0
 
 # Clone Autoware Universe
 RUN git clone -b 0.45.1 --depth 1 https://github.com/autowarefoundation/autoware.git
@@ -78,6 +78,15 @@ RUN apt-mark hold \
         libnvinfer-headers-dev \
         libnvinfer-headers-plugin-dev
 
+# Install cumm & spconv
+RUN bash -c 'source /autoware/amd64.env && \
+    wget -O cumm.deb https://github.com/autowarefoundation/spconv_cpp/releases/download/spconv_v${spconv_version}%2Bcumm_v${cumm_version}/cumm_${cumm_version}_amd64.deb && \
+    dpkg -i cumm.deb && \ 
+    rm cumm.deb && \
+    wget -O spconv.deb https://github.com/autowarefoundation/spconv_cpp/releases/download/spconv_v${spconv_version}%2Bcumm_v${cumm_version}/spconv_${spconv_version}_amd64.deb && \
+    dpkg -i spconv.deb && \ 
+    rm spconv.deb'
+
 # Add resources dir
 ADD resources/ /resources/
 
@@ -98,7 +107,7 @@ RUN /bin/bash -c "cd autoware && \
 # Set Custom Autoware Params
 RUN /bin/bash -c "/resources/set_custom_autoware_params.sh"
 
-# Build
+# Build Autoware Packages
 RUN /bin/bash -c "cd autoware && \
     source /opt/ros/humble/setup.bash && \
     colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release"
