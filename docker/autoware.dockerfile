@@ -90,12 +90,21 @@ RUN bash -c 'source /autoware/amd64.env && \
 # Add resources dir
 ADD resources/ /resources/
 
-# Download Accel & Brake Maps and set up ub_hdmap
-RUN /bin/bash -c "cd /resources && /resources/download_maps.sh"
+# Download Accel & Brake Maps and Camera files
+RUN /bin/bash -c "cd /resources && /resources/download_assets.sh"
 
 # Clone ub_lincoln.repos
 RUN cd /autoware && \
     vcs import src < /resources/ub_lincoln.repos
+
+# Install DLIO SLAM dependencies
+RUN apt install libomp-dev libpcl-dev libeigen3-dev 
+## Clone DLIO SLAM repo
+RUN cd /ros_ws/src && \
+    git clone -b feature/ros2 https://github.com/vectr-ucla/direct_lidar_inertial_odometry.git
+### Build DLIO SLAM package
+RUN cd /ros_ws && \
+    /bin/bash -c "source /opt/ros/humble/setup.bash && colcon build --symlink-install"
 
 # Install dependencies
 RUN /bin/bash -c "cd autoware && \
