@@ -9,8 +9,8 @@ This repo contains a dockerfile to build a docker image to simplify the use of C
 > Currently, with this setup, an NVIDIA GeForce RTX 20 Series video card or better is required for Autoware perception tasks
 4) Test the install out by running a sample workload [[Link]](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/sample-workload.html)
 
-# Usage 
-2) Pull or Build Images:
+# Usage
+1) Pull or Build Images:
 ```
 cd docker
 docker compose pull
@@ -21,10 +21,14 @@ cd docker
 ./build_ros2.sh
 ./build_autoware.sh
 ```
-2) Configure `.env` by running the `setup_env.sh` file ONCE before running `dc_up.sh` to set the container mounted directories to your host system
+2) Configure `.env` manually if you have a host_data folder already setup OR by running the `setup_env.sh` file ONCE before running `dc_up.sh` to set the container mounted directories to your host system.
     - $HOST_DATA_PATH
     - $AUTOWARE_DATA_PATH
-The `setup_env.sh` creates host_data & autoware_data folders and updates their paths in the .env file.
+> [!WARNING]
+> The `setup_env.sh` script should be run `ONLY` during `INITIAL` setup of the `ub-lincoln-docker` workspace. 
+
+> [!NOTE]
+> The `setup_env.sh` creates `host_data` & `autoware_data` folders, updates their paths in the .env file, downloads all the deep learning artifacts used in autoware in `autoware_data` and the `UB_HDMAP` in the `host_data` folder. 
 
 3) Verify that `AUTOWARE_DATA_PATH` directory has the artifact models downloaded within. If not, use the `scripts/host_dl_artifacts.bash` in the directory to download them.
 
