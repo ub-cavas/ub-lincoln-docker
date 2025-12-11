@@ -32,10 +32,10 @@ cd autoware_data
 autoware_data_dir=$(pwd)
 
 # Copy host_dl_artifacts to autoware_data and run
-cp "$current_dir/../scripts/host_dl_artifacts.bash" "$autoware_data_dir"
+cp "$current_dir/../scripts/host_download_artifacts.bash" "$autoware_data_dir"
 cd "$autoware_data_dir"
-bash host_dl_artifacts.bash
-rm -f host_dl_artifacts.bash
+bash host_download_artifacts.bash
+rm -f host_download_artifacts.bash
 
 # Setup .env File
 cd "$current_dir"

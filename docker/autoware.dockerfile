@@ -90,9 +90,6 @@ RUN bash -c 'source /autoware/amd64.env && \
 # Add resources dir
 ADD resources/ /resources/
 
-# Download Accel & Brake Maps and Camera files
-RUN /bin/bash -c "cd /resources && /resources/download_assets.sh"
-
 # Clone ub_lincoln.repos
 RUN cd /autoware && \
     vcs import src < /resources/ub_lincoln.repos
@@ -101,15 +98,18 @@ RUN /bin/bash -c "cd /ros_ws && \
     source /opt/ros/humble/setup.bash && \
     colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release"
 
-# Install dependencies
+# Install Dependencies
 RUN /bin/bash -c "cd autoware && \
     source /opt/ros/humble/setup.bash && \
     apt-get update && \
     rosdep update && \
     rosdep install -y --from-paths src --ignore-src --rosdistro $ROS_DISTRO"
 
-# Set Custom Autoware Params
-RUN /bin/bash -c "/resources/set_custom_autoware_params.sh"
+# Download & Install Assets (Accel/Brake maps and Camera files)
+RUN /bin/bash -c "cd /resources && /resources/build_assets.sh"
+
+# Config Autoware & Set Custom Autoware Params
+RUN /bin/bash -c "cd /resources && /resources/build_config_autoware.sh"
 
 # Build Autoware Packages
 RUN /bin/bash -c "cd autoware && \
