@@ -21,17 +21,23 @@ cd docker
 ./build_ros2.sh
 ./build_autoware.sh
 ```
-2) Configure `.env` to set the container mounted directories to your host system
+2) Configure `.env` to set the container mounted directories to your host system.
     - $HOST_DATA_PATH
     - $AUTOWARE_DATA_PATH
 
-3) Verify that `AUTOWARE_DATA_PATH` directory has the artifact models downloaded within. If not, use the `scripts/host_dl_artifacts.bash` in the directory to download them.
+3) Verify that `AUTOWARE_DATA_PATH` directory has the artifact models downloaded within. If not, use `scripts/host_download_artifacts.sh` in the directory to download them.
 
-4) Docker Compose Up:
+4) Verify that `UB_HDMAP` exist in the `host_data` folder. If not, use `scripts/host_download_maps.sh` in the directory to download them.
+
+> [!NOTE]
+> Alternatively For Steps 2-4 [STILL IN DEVELOPMENT]:
+> Run `scrips/initial_setup_env.sh` to setup the workspace. The `initial_setup_env.sh` creates `host_data` & `autoware_data` folders, updates their paths in the .env file, downloads all the deep learning artifacts used in autoware in `autoware_data` and the `UB_HDMAP` in the `host_data` folder.
+
+5) Docker Compose Up:
 ```
 ./dc_up.sh
 ```
-5) Start Bash Shell In Container:
+6) Start Bash Shell In Container:
 ```
 ./dc_bash.sh
 ```

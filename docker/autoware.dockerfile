@@ -1,7 +1,7 @@
-FROM ubcavas/ros2-lincoln:20250628.0
+FROM ubcavas/ros2-lincoln:latest
 
 # Clone Autoware Universe
-RUN git clone -b 0.43.1 --depth 1 https://github.com/autowarefoundation/autoware.git
+RUN git clone -b 0.45.1 --depth 1 https://github.com/autowarefoundation/autoware.git
 RUN cd /autoware && \
     mkdir src && \
     vcs import src < autoware.repos
@@ -18,10 +18,6 @@ RUN bash -c 'source /autoware/amd64.env && \
 
 # Install gdown
 RUN pip3 install gdown
-
-# Install usbutils #TODO: Move to ROS Base Image
-RUN apt-get install -y \
-    usbutils
 
 # Install geographiclib
 RUN apt-get install -y \
@@ -82,32 +78,40 @@ RUN apt-mark hold \
         libnvinfer-headers-dev \
         libnvinfer-headers-plugin-dev
 
+# Install cumm & spconv
+RUN bash -c 'source /autoware/amd64.env && \
+    wget -O cumm.deb https://github.com/autowarefoundation/spconv_cpp/releases/download/spconv_v${spconv_version}%2Bcumm_v${cumm_version}/cumm_${cumm_version}_amd64.deb && \
+    dpkg -i cumm.deb && \ 
+    rm cumm.deb && \
+    wget -O spconv.deb https://github.com/autowarefoundation/spconv_cpp/releases/download/spconv_v${spconv_version}%2Bcumm_v${cumm_version}/spconv_${spconv_version}_amd64.deb && \
+    dpkg -i spconv.deb && \ 
+    rm spconv.deb'
+
 # Add resources dir
 ADD resources/ /resources/
-
-# Download Accel & Brake Maps and set up ub_hdmap
-RUN /bin/bash -c "cd /resources && /resources/download_maps.sh"
 
 # Clone ub_lincoln.repos
 RUN cd /autoware && \
     vcs import src < /resources/ub_lincoln.repos
 
-# Apply autoware_launch patch
-# https://github.com/autowarefoundation/autoware_launch/pull/1403
-RUN cd /autoware/src/launcher/autoware_launch && \
-    git cherry-pick -n d4e825c580f8624169bc3ec5bb0776d13007fec7
+RUN /bin/bash -c "cd /ros_ws && \
+    source /opt/ros/humble/setup.bash && \
+    colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release"
 
-# Install dependencies
+# Install Dependencies
 RUN /bin/bash -c "cd autoware && \
     source /opt/ros/humble/setup.bash && \
     apt-get update && \
     rosdep update && \
     rosdep install -y --from-paths src --ignore-src --rosdistro $ROS_DISTRO"
 
-# Set Custom Autoware Params
-RUN /bin/bash -c "/resources/set_custom_autoware_params.sh"
+# Download & Install Assets (Accel/Brake maps and Camera files)
+RUN /bin/bash -c "cd /resources && /resources/build_assets.sh"
 
-# Build
+# Config Autoware & Set Custom Autoware Params
+RUN /bin/bash -c "cd /resources && /resources/build_config_autoware.sh"
+
+# Build Autoware Packages
 RUN /bin/bash -c "cd autoware && \
     source /opt/ros/humble/setup.bash && \
     colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release"
