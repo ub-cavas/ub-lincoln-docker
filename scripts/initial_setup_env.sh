@@ -17,13 +17,13 @@ cd host_data
 host_data_dir=$(pwd)
 
 # Download ub_hdmaps in host_data
-cd "$current_dir/../scripts" 
+cd "$current_dir" 
 echo -e "$(pwd)"
 
-cp download_maps.sh "$host_data_dir"
+cp host_download_maps.sh "$host_data_dir"
 cd "$host_data_dir"
-bash download_maps.sh
-rm -f download_maps.sh
+bash host_download_maps.sh
+rm -f host_download_maps.sh
 
 # Create autoware_data folder
 cd "$current_dir/../../"
@@ -32,15 +32,16 @@ cd autoware_data
 autoware_data_dir=$(pwd)
 
 # Copy host_dl_artifacts to autoware_data and run
-cp "$current_dir/../scripts/host_download_artifacts.bash" "$autoware_data_dir"
+cp "$current_dir/host_download_artifacts.sh" "$autoware_data_dir"
 cd "$autoware_data_dir"
-bash host_download_artifacts.bash
-rm -f host_download_artifacts.bash
+bash host_download_artifacts.sh
+rm -f host_download_artifacts.sh
 
 # Setup .env File
-cd "$current_dir"
-ENV_FILE="$current_dir/.env-example"
-ENV_FILE_NEW="$current_dir/.env"
+cd "$current_dir/../docker"
+env_dir=$(pwd)
+ENV_FILE="$env_dir/.env-example"
+ENV_FILE_NEW="$env_dir/.env"
 
 if [ -f "$ENV_FILE_NEW" ]; then
     echo -e "${R}.env file already exists! Printing the contents:${RESET}"
