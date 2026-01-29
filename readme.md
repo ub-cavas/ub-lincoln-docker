@@ -10,7 +10,21 @@ This repo contains a dockerfile to build a docker image to simplify the use of C
 4) Test the install out by running a sample workload [[Link]](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/sample-workload.html)
 
 # Usage
-1) Pull or Build Images:
+1) Create a `.env`
+```
+cp docker/.env_example docker/.env
+```
+   
+2) Configure `.env` to set the container mounted directories to your host system.
+    - $HOST_DATA_PATH
+    - $AUTOWARE_DATA_PATH
+```
+# Example
+HOST_DATA_PATH=/home/<USER>/ub-lincoln-docker-data/host_data
+AUTOWARE_DATA_PATH=/home/<USER>/ub-lincoln-docker-data/autoware_data
+```
+      
+3) Pull or Build Images:
 ```
 cd docker
 docker compose pull
@@ -21,13 +35,9 @@ cd docker
 ./build_ros2.sh
 ./build_autoware.sh
 ```
-2) Configure `.env` to set the container mounted directories to your host system.
-    - $HOST_DATA_PATH
-    - $AUTOWARE_DATA_PATH
+4) Verify that `AUTOWARE_DATA_PATH` directory has the artifact models downloaded within. If not, use `scripts/host_download_artifacts.sh` in the directory to download them.
 
-3) Verify that `AUTOWARE_DATA_PATH` directory has the artifact models downloaded within. If not, use `scripts/host_download_artifacts.sh` in the directory to download them.
-
-4) Verify that `UB_HDMAP` exist in the `host_data` folder. If not, use `scripts/host_download_maps.sh` in the directory to download them.
+5) Verify that `UB_HDMAP` exist in the `host_data` folder. If not, use `scripts/host_download_maps.sh` in the directory to download them.
 
 > [!NOTE]
 > Alternatively For Steps 2-4 [STILL IN DEVELOPMENT]:
