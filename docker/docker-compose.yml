@@ -22,6 +22,7 @@ services:
       - ~/.ssh:/root/.ssh:ro
       - $HOST_DATA_PATH:/host_data
       - $AUTOWARE_DATA_PATH:/root/autoware_data
+      - ${UB_AUTOWARE_CARLA_INTERFACE_PATH:-../../../CARLA/UB-API/carla-autoware-sumo-bridge/autoware_carla_interface}:/autoware/src/universe/autoware_universe/simulator/autoware_carla_interface:rw
       # FOR DEBUGGING
       # - ~/.gitconfig:/root/.gitconfig:ro
       # - $UB_SENSOR_KIT:/autoware/src/launcher/autoware_launch/sensor_kit/ub_lincoln_sensor_kit_launch
