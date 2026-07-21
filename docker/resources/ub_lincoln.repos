@@ -3,7 +3,16 @@ repositories:
   launcher/autoware_launch/sensor_kit/ub_lincoln_sensor_kit_launch:
     type: git
     url: https://github.com/ub-cavas/ub_lincoln_sensor_kit_launch.git
-    version: main
+    # Merged Ouster OS-128 support and calibration update.
+    version: eedf68abbfe5ff1e2b50efd7a0ef832e1ad1d80b
+
+  # Ouster-capable Nebula driver.
+  sensor_component/external/nebula:
+    type: git
+    url: https://github.com/ub-cavas/nebula.git
+    # add-ouster-support branch tip at image integration time.
+    version: 3965749d6aa6c038c188d75c84bbc4ddb769c9e2
+
   launcher/autoware_launch/vehicle/ub_lincoln_vehicle_launch:
     type: git
     url: https://github.com/ub-cavas/ub_lincoln_vehicle_launch.git

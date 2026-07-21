@@ -90,13 +90,27 @@ RUN bash -c 'source /autoware/amd64.env && \
 # Add resources dir
 ADD resources/ /resources/
 
-# Clone ub_lincoln.repos
-RUN cd /autoware && \
-    vcs import src < /resources/ub_lincoln.repos
+# Clone UB Lincoln repositories. Autoware's manifest may already provide a
+# default Nebula checkout; remove it so the pinned Ouster-capable revision
+# from ub_lincoln.repos is the one that is built.
+# Autoware already provides agnocast under middleware/external/agnocast, so
+# remove Nebula's nested copy after importing its other build dependencies.
+RUN rm -rf /autoware/src/sensor_component/external/nebula && \
+    cd /autoware && \
+    vcs import src < /resources/ub_lincoln.repos && \
+    cd /autoware/src/sensor_component/external/nebula && \
+    vcs import < build_depends-humble.repos && \
+    rm -rf agnocast
 
 RUN /bin/bash -c "cd /ros_ws && \
     source /opt/ros/humble/setup.bash && \
     colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release"
+
+# Temporary compatibility fix: the pinned Nebula fork provides the `nebula`
+# metapackage instead of the obsolete `nebula_sensor_driver` dependency name.
+# This will be replaced by source-repository dependency updates later.
+RUN grep -RIl --include=package.xml nebula_sensor_driver /autoware/src | \
+    xargs -r sed -i 's/nebula_sensor_driver/nebula/g'
 
 # Install Dependencies
 RUN /bin/bash -c "cd autoware && \
