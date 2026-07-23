@@ -53,25 +53,40 @@ ros2 launch lincoln_launch transform.launch.py
 ros2 launch lincoln_launch autoware.launch.xml
 ```
 
-## Individual Packages:
+# Individual Packages:
+## DBW:
 ```
-# DBW:
 ros2 launch ds_dbw_can dbw.launch.xml
+```
 
-# Velodyne Lidar:
+## Lidar:
+### Ouster OS-128 (default):
+```
+ros2 launch lincoln_launch lidar.launch.py
+```
+
+The Lincoln image uses the Ouster OS-128 configuration by default. The Ouster
+must be reachable at `192.168.1.8`, and the host hardware NIC must have
+`192.168.1.10` on the same subnet. The driver uses lidar UDP port `7502` and
+IMU UDP port `7503`.
+
+### Velodyne Lidar
+```
 ros2 launch velodyne velodyne-all-nodes-VLP32C-composed-launch.py
+```
 
-# Novatel GPS:
+## Novatel GPS:
+```
 ros2 launch novatel_oem7_driver oem7_net.launch.py oem7_ip_addr:=192.168.100.201 oem7_port:=3005
+```
 
-# Mako Camera:
+## Mako Camera:
+```
 ros2 run vimbax_camera vimbax_camera_node
 ```
 
-
-```
 # Other Misc Packages:
-
-# DBW Joystick Testing Demo:
+## DBW Joystick Testing Demo:
+```
 ros2 launch ds_dbw_joystick_demo joystick_demo.launch.xml sys:=true
 ```
