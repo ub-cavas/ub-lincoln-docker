@@ -10,16 +10,10 @@ This repo contains a dockerfile to build a docker image to simplify the use of C
 4) Test the install out by running a sample workload [[Link]](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/sample-workload.html)
 
 # Usage
-1) Pull or Build Images:
+1) Pull Images:
 ```
 cd docker
 docker compose pull
-
-- or -
-
-cd docker 
-./build_ros2.sh
-./build_autoware.sh
 ```
 2) Configure `.env` to set the container mounted directories to your host system.
     - $HOST_DATA_PATH
@@ -89,4 +83,11 @@ ros2 run vimbax_camera vimbax_camera_node
 ## DBW Joystick Testing Demo:
 ```
 ros2 launch ds_dbw_joystick_demo joystick_demo.launch.xml sys:=true
+```
+
+# Manually Building Docker Images:
+```
+cd docker 
+./build_ros2.sh
+./build_autoware.sh
 ```
