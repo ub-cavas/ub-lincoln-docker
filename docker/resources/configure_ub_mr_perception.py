@@ -32,12 +32,17 @@ def patch_tracking(text):
             'Tracking launch does not use selected_input_channels.')
     pattern = r'(<let\s+name="(?:input/detection_input_channels|detection_enabled_channels)"\s+value=")(\[[^"\n]*\])(")'
 
-    def append(match):
+    def prepend(match):
         values = match[2]
         require(CHANNEL not in values, 'Virtual channel already present without matching profile state.')
-        return match[1] + values[:-1] + ", '" + CHANNEL + "']" + match[3]
+        # Autoware 0.43 starts with input stream 0 as its processing trigger.
+        # A silent real detector would otherwise prevent virtual-only traffic
+        # from ever being processed (including selection of another trigger).
+        remaining = values[1:-1].strip()
+        channels = "['" + CHANNEL + "'" + (', ' + remaining if remaining else '') + ']'
+        return match[1] + channels + match[3]
 
-    updated, count = re.subn(pattern, append, text)
+    updated, count = re.subn(pattern, prepend, text)
     require(count >= 2, 'Unsupported tracking channel selection layout; expected normal and multi-channel branches.')
     ET.fromstring(updated)
     return updated

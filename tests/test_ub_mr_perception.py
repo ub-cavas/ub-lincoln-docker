@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+import xml.etree.ElementTree as ET
 
 HELPER = Path(__file__).resolve().parents[1] / 'docker/resources/configure_ub_mr_perception.py'
 spec = importlib.util.spec_from_file_location('profile', HELPER)
@@ -57,13 +58,59 @@ class ProfileTests(unittest.TestCase):
         state = json.loads((self.root / profile.STATE_FILE).read_text())
         self.assertEqual(4, len(state['changes']))
         combined = '\n'.join(item['applied'] for item in state['changes'])
-        self.assertIn("'detected_objects', 'custom_real', 'ub_mr_virtual_objects'", combined)
+        self.assertIn("'ub_mr_virtual_objects', 'detected_objects', 'custom_real'", combined)
         self.assertIn('/real/objects', combined)
         self.assertIn('/another/objects', combined)
         self.assertIn('value="false"', combined)
         profile.restore(self.root)
         self.assertEqual(original, self.snapshot())
         profile.restore(self.root)
+
+    def test_virtual_channel_triggers_every_tracking_branch(self):
+        # Includes the normal path, conditional multi-channel paths, and the
+        # forwarding let whose variable reference must not be rewritten.
+        text = '''<launch>
+<let name="input/detection_input_channels" value="['detected_objects', 'custom_real']"/>
+<let name="detection_enabled_channels" value="$(var input/detection_input_channels)"/>
+<let name="detection_enabled_channels" value="['lidar_$(var lidar_dnn_detection_output)','detection_by_tracker']" if="$(var use_detection_by_tracker)"/>
+<let name="detection_enabled_channels" value="['lidar_$(var lidar_dnn_detection_output)']" unless="$(var use_detection_by_tracker)"/>
+<let name="detection_enabled_channels" value="['radar_far']"/>
+<let name="detection_enabled_channels" value="[]"/>
+<arg name="selected_input_channels" value="$(var detection_enabled_channels)"/>
+</launch>'''
+        original = ET.fromstring(text)
+        patched = ET.fromstring(profile.patch_tracking(text))
+        for before, after in zip(original, patched):
+            value = before.get('value')
+            if value.startswith('['):
+                self.assertEqual(
+                    [profile.CHANNEL] + profile.yaml.safe_load(value),
+                    profile.yaml.safe_load(after.get('value')))
+                self.assertEqual(before.get('if'), after.get('if'))
+                self.assertEqual(before.get('unless'), after.get('unless'))
+            else:
+                self.assertEqual(before.attrib, after.attrib)
+
+    def test_launcher_restore_and_reapply_upgrades_legacy_order(self):
+        original = self.snapshot()
+        profile.apply(self.root, '/virtual_obstacles')
+        state_path = self.root / profile.STATE_FILE
+        state = json.loads(state_path.read_text())
+        tracking = next(change for change in state['changes']
+                        if change['path'].endswith('/tracking.launch.xml'))
+        tracking['applied'] = tracking['original'].replace(
+            "']", "', 'ub_mr_virtual_objects']")
+        (self.root / tracking['path']).write_text(tracking['applied'])
+        state_path.write_text(json.dumps(state))
+
+        # The CARLA launcher restores a saved profile before applying it again.
+        profile.restore(self.root)
+        self.assertEqual(original, self.snapshot())
+        profile.apply(self.root, '/virtual_obstacles')
+        upgraded = (self.root / tracking['path']).read_text()
+        self.assertIn("['ub_mr_virtual_objects', 'detected_objects', 'custom_real']", upgraded)
+        profile.restore(self.root)
+        self.assertEqual(original, self.snapshot())
 
     def test_unsupported_version_does_not_write(self):
         self.write('autoware_multi_object_tracker', 'package.xml', '<package><version>99.0.0</version></package>')
