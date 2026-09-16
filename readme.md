@@ -75,3 +75,30 @@ ros2 run vimbax_camera vimbax_camera_node
 # DBW Joystick Testing Demo:
 ros2 launch ds_dbw_joystick_demo joystick_demo.launch.xml sys:=true
 ```
+
+## UB-MR virtual-object input
+
+The `20251015.0` image uses Autoware Universe 0.43.0. The optional UB-MR profile
+adds `/virtual_obstacles` as a separate multi-object-tracker input while retaining
+real detections. Stop Autoware before applying or restoring it:
+
+```bash
+python3 docker/resources/configure_ub_mr_perception.py apply --autoware-root /autoware --dry-run
+python3 docker/resources/configure_ub_mr_perception.py apply --autoware-root /autoware
+python3 docker/resources/configure_ub_mr_perception.py restore --autoware-root /autoware
+```
+
+Compose mounts the helper at `/resources/configure_ub_mr_perception.py`. New images
+bundle it and can opt in with `--build-arg UB_MR_PERCEPTION_PROFILE=1` (default: 0).
+The helper rejects unsupported versions/layouts, preserves existing input channels,
+and records reversible changes in `/autoware/.ub_mr_perception_profile.json`.
+
+When used through UB-DigitalTwin, set `UB_MR_PERCEPTION_PROFILE=1` on either CARLA
+launcher. Set `UB_MR_BOUNDING_BOX_TOPIC` if Unity uses a custom topic. The profile
+does not change sensor point-cloud routing or select Unity's recognition mode.
+See `UB-MR/Docs/VirtualObjectRecognition.md` in the parent repository for the full
+user guide.
+
+Checks: `python3 -m unittest discover -s tests -v`. In a sourced Autoware container,
+`ROS_DOMAIN_ID=182 python3 tests/recognition_tracker_smoke.py` exercises the actual
+tracker on a separate ROS domain without changing installed configuration.

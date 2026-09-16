@@ -31,6 +31,12 @@ RUN bash -c 'source /autoware/amd64.env && \
     apt-get update && \
     apt-get install -y ros-${rosdistro}-pacmod3'
 
+# Optional UB-MR tracker integration, applied only after the installed launch files exist.
+ARG UB_MR_PERCEPTION_PROFILE=0
+RUN if [ "$UB_MR_PERCEPTION_PROFILE" = "1" ]; then \
+      python3 /resources/configure_ub_mr_perception.py apply; \
+    fi
+
 # Configure .bashrc
 RUN echo "" >> ~/.bashrc && \
     echo "# Added from autoware.dockerfile build" >> ~/.bashrc
@@ -115,6 +121,12 @@ RUN /bin/bash -c "cd /resources && /resources/build_config_autoware.sh"
 RUN /bin/bash -c "cd autoware && \
     source /opt/ros/humble/setup.bash && \
     colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release"
+
+# Optional UB-MR tracker integration, applied only after the installed launch files exist.
+ARG UB_MR_PERCEPTION_PROFILE=0
+RUN if [ "$UB_MR_PERCEPTION_PROFILE" = "1" ]; then \
+      python3 /resources/configure_ub_mr_perception.py apply; \
+    fi
 
 # Configure .bashrc
 RUN sed -i 's|# source /autoware/install/setup.bash|source /autoware/install/setup.bash|' ~/.bashrc
